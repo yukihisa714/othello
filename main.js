@@ -28,8 +28,8 @@ for (let row = 0; row < MATH_NUM; row++) {
     }
 }
 
-ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2 - 1].num = 1;
-ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2].num = -1;
-ARRAY[MATH_NUM / 2][MATH_NUM / 2 - 1].num = -1;
-ARRAY[MATH_NUM / 2][MATH_NUM / 2].num = 1;
+ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2 - 1].elm.click();
+ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2].elm.click();
+ARRAY[MATH_NUM / 2][MATH_NUM / 2].elm.click();
+ARRAY[MATH_NUM / 2][MATH_NUM / 2 - 1].elm.click();
 

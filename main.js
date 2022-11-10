@@ -33,21 +33,21 @@ ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2].elm.click();
 ARRAY[MATH_NUM / 2][MATH_NUM / 2].elm.click();
 ARRAY[MATH_NUM / 2][MATH_NUM / 2 - 1].elm.click();
 
-function a(x, y, mx, my) {
-    let x = x + mx;
-    let y = y + my;
+function a(sx, sy, mx, my) {
+    let x = sx + mx;
+    let y = sy + my;
     let result = false;
     while (ARRAY[y][x].num === nowColor * -1) {
+        if (x < 0 || MATH_NUM <= x || y < 0 || MATH_NUM <= y) {
+            break;
+        }
+        if (!ARRAY[y][x].num) {
+            break;
+        }
         if (ARRAY[y + my][x + mx].num === nowColor) {
             result = true;
             break;
         };
-        if (!ARRAY[y][x].num) {
-            break;
-        }
-        if (x < 0 || MATH_NUM <= x || y < 0 || MATH_NUM <= y) {
-            break;
-        }
         x += mx;
         y += my;
     }

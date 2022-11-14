@@ -18,11 +18,12 @@ for (let row = 0; row < MATH_NUM; row++) {
         reflecColor(ARRAY[row][col]);
         TD.appendChild(ARRAY[row][col].stone);
         TD.addEventListener("click", () => {
-            console.log(col, row);
             if (!ARRAY[row][col].num) {
-                ARRAY[row][col].num = nowColor;
-                reflecColor(ARRAY[row][col]);
-                nowColor *= -1;
+                if (c(col, row)) {
+                    ARRAY[row][col].num = nowColor;
+                    reflecColor(ARRAY[row][col]);
+                    nowColor *= -1;
+                }
             }
         });
     }
@@ -47,20 +48,25 @@ function a(sx, sy, mx, my) {
     let x = sx + mx;
     let y = sy + my;
     let result = false;
-    if (x < 0 || MATH_NUM <= x || y < 0 || MATH_NUM <= y) {
-        while (ARRAY[y][x].num === nowColor * -1) {
+    if (0 <= x && x < MATH_NUM && 0 <= y && y < MATH_NUM) {
+        while (ARRAY[y][x].num === -nowColor) {
             if (x < 0 || MATH_NUM <= x || y < 0 || MATH_NUM <= y) {
                 break;
             }
             if (!ARRAY[y][x].num) {
                 break;
             }
-            if (ARRAY[y + my][x + mx].num === nowColor) {
+            const px = x + mx;
+            const py = y + my;
+            if (px < 0 || MATH_NUM <= px || py < 0 || MATH_NUM <= py) {
+                break;
+            }
+            if (ARRAY[py][px].num === nowColor) {
                 result = true;
                 break;
             };
-            x += mx;
-            y += my;
+            x = px;
+            y = py;
         }
     }
     return result;
@@ -69,9 +75,25 @@ function a(sx, sy, mx, my) {
 function b(sx, sy, mx, my) {
     let x = sx + mx;
     let y = sy + my;
-    while (ARRAY[y][x].num === nowColor * -1) {
+    while (ARRAY[y][x].num === -nowColor) {
         ARRAY[y][x].num = nowColor;
+        reflecColor(ARRAY[y][x]);
         x += mx;
         y += my;
     }
+}
+
+function c(sx, sy) {
+    let i = 0;
+    for (let y = -1; y < 2; y++) {
+        for (let x = -1; x < 2; x++) {
+            if (x || y) {
+                if (a(sx, sy, x, y)) {
+                    b(sx, sy, x, y);
+                    i++;
+                }
+            }
+        }
+    }
+    return i;
 }

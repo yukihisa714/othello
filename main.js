@@ -18,13 +18,7 @@ for (let row = 0; row < MATH_NUM; row++) {
         reflecColor(ARRAY[row][col]);
         TD.appendChild(ARRAY[row][col].stone);
         TD.addEventListener("click", () => {
-            if (!ARRAY[row][col].num) {
-                if (c(col, row)) {
-                    ARRAY[row][col].num = nowColor;
-                    reflecColor(ARRAY[row][col]);
-                    nowColor *= -1;
-                }
-            }
+            set(col, row);
         });
     }
 }
@@ -33,18 +27,18 @@ function reflecColor(block) {
     block.stone.style.background = COLORS[block.num + 1];
 }
 
-ARRAY[MATH_NUM / 2][MATH_NUM / 2].num = -1;
-ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2].num = 1;
-ARRAY[MATH_NUM / 2][MATH_NUM / 2 - 1].num = 1;
-ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2 - 1].num = -1;
+const MATH_HALF_NUM = MATH_NUM / 2;
+ARRAY[MATH_HALF_NUM][MATH_HALF_NUM].num = -1;
+ARRAY[MATH_HALF_NUM - 1][MATH_HALF_NUM].num = 1;
+ARRAY[MATH_HALF_NUM][MATH_HALF_NUM - 1].num = 1;
+ARRAY[MATH_HALF_NUM - 1][MATH_HALF_NUM - 1].num = -1;
 
-reflecColor(ARRAY[MATH_NUM / 2][MATH_NUM / 2]);
-reflecColor(ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2]);
-reflecColor(ARRAY[MATH_NUM / 2][MATH_NUM / 2 - 1]);
-reflecColor(ARRAY[MATH_NUM / 2 - 1][MATH_NUM / 2 - 1]);
+reflecColor(ARRAY[MATH_HALF_NUM][MATH_HALF_NUM]);
+reflecColor(ARRAY[MATH_HALF_NUM - 1][MATH_HALF_NUM]);
+reflecColor(ARRAY[MATH_HALF_NUM][MATH_HALF_NUM - 1]);
+reflecColor(ARRAY[MATH_HALF_NUM - 1][MATH_HALF_NUM - 1]);
 
-
-function a(sx, sy, mx, my) {
+function check(sx, sy, mx, my) {
     let x = sx + mx;
     let y = sy + my;
     let result = false;
@@ -72,7 +66,7 @@ function a(sx, sy, mx, my) {
     return result;
 }
 
-function b(sx, sy, mx, my) {
+function reverse(sx, sy, mx, my) {
     let x = sx + mx;
     let y = sy + my;
     while (ARRAY[y][x].num === -nowColor) {
@@ -83,17 +77,23 @@ function b(sx, sy, mx, my) {
     }
 }
 
-function c(sx, sy) {
+function set(sx, sy) {
+    if (ARRAY[sy][sx].num) return;
     let i = 0;
     for (let y = -1; y < 2; y++) {
         for (let x = -1; x < 2; x++) {
             if (x || y) {
-                if (a(sx, sy, x, y)) {
-                    b(sx, sy, x, y);
+                if (check(sx, sy, x, y)) {
+                    reverse(sx, sy, x, y);
                     i++;
                 }
             }
         }
+    }
+    if (i) {
+        ARRAY[sy][sx].num = nowColor;
+        reflecColor(ARRAY[sy][sx]);
+        nowColor *= -1;
     }
     return i;
 }

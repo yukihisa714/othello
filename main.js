@@ -18,7 +18,19 @@ for (let row = 0; row < MATH_NUM; row++) {
         reflecColor(ARRAY[row][col]);
         TD.appendChild(ARRAY[row][col].stone);
         TD.addEventListener("click", () => {
-            set(col, row);
+            set(col, row, true);
+            const finish = finishCheck();
+            if (finish.isFinish) {
+                console.log(`勝負あり!!!`);
+                if (finish.stones[0] === finish.stones[2]) console.log(`引き分け`);
+                else {
+                    console.log(`${COLORS[finish.stones.indexOf(Math.max(finish.stones[0], finish.stones[2]))]}の勝ち`);
+                }
+            }
+            else if (pass()) {
+                console.log(`${COLORS[nowColor + 1]}パス!`);
+                nowColor *= -1;
+            }
         });
     }
 }
@@ -77,23 +89,47 @@ function reverse(sx, sy, mx, my) {
     }
 }
 
-function set(sx, sy) {
+function set(sx, sy, isSet) {
     if (ARRAY[sy][sx].num) return;
     let i = 0;
     for (let y = -1; y < 2; y++) {
         for (let x = -1; x < 2; x++) {
             if (x || y) {
                 if (check(sx, sy, x, y)) {
-                    reverse(sx, sy, x, y);
+                    if (isSet) reverse(sx, sy, x, y);
                     i++;
                 }
             }
         }
     }
-    if (i) {
-        ARRAY[sy][sx].num = nowColor;
-        reflecColor(ARRAY[sy][sx]);
-        nowColor *= -1;
+    if (isSet) {
+        if (i) {
+            ARRAY[sy][sx].num = nowColor;
+            reflecColor(ARRAY[sy][sx]);
+            nowColor *= -1;
+        }
     }
     return i;
+}
+
+function finishCheck() {
+    let isFinish = false;
+    let stones = [0, 0, 0];
+    for (const x of ARRAY) {
+        for (const p of x) {
+            stones[p.num + 1]++;
+        }
+    }
+    if (stones[0] * stones[2] === 0) isFinish = true;
+    if (stones[1] === 0) isFinish = true;
+    return { isFinish, stones };
+}
+
+function pass() {
+    for (let y = 0; y < MATH_NUM; y++) {
+        for (let x = 0; x < MATH_NUM; x++) {
+            if (set(x, y, false)) return false;
+        }
+    }
+    return true;
 }

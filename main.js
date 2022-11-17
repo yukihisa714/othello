@@ -3,6 +3,7 @@ const TABLE = document.getElementById("table");
 
 let nowColor = 1;
 const COLORS = ["white", "green", "black"];
+const MESSAGES = ["黒の勝ち!!", "引き分け", "白の勝ち!!"];
 
 const ARRAY = [];
 for (let row = 0; row < MATH_NUM; row++) {
@@ -22,10 +23,7 @@ for (let row = 0; row < MATH_NUM; row++) {
             const finish = finishCheck();
             if (finish.isFinish) {
                 console.log(`勝負あり!!!`);
-                if (finish.stones[0] === finish.stones[2]) console.log(`引き分け`);
-                else {
-                    console.log(`${COLORS[finish.stones.indexOf(Math.max(finish.stones[0], finish.stones[2]))]}の勝ち`);
-                }
+                console.log(MESSAGES[Math.sign(finish.stones[0] - finish.stones[2]) + 1]);
             }
             else if (pass()) {
                 console.log(`${COLORS[nowColor + 1]}パス!`);
@@ -120,8 +118,7 @@ function finishCheck() {
             stones[p.num + 1]++;
         }
     }
-    if (stones[0] * stones[2] === 0) isFinish = true;
-    if (stones[1] === 0) isFinish = true;
+    if (stones[0] * stones[1] * stones[2] === 0) isFinish = true;
     return { isFinish, stones };
 }
 
